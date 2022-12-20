@@ -1,3 +1,4 @@
+
 name: Build and Publish
 
 on:
@@ -8,22 +9,28 @@ on:
   pull_request:
 
 jobs:
-  run_if:
-    if:  startsWith(github.head_ref, 'releases/')
+  # define job to build and publish docker image
+  build-and-push-docker-image:
+    name: Build Docker image and push to repositories
+    # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
+
+    # steps to perform in job
     steps:
-      - run: echo "The head of this PR starts with 'releases/'"
-    
       - name: Checkout code
         uses: actions/checkout@v1
-      -  name: Configure AWS credentials
-         uses: aws-actions/configure-aws-credentials@v1
-         with:
-               aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-               aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-               aws-region: ${{ secrets.AWS_REGION }}
-      -  name: Login to Amazon ECR
-         id: login-ecr
-         uses: aws-actions/amazon-ecr-login@v1
         
+      
+      - name:  Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+             aws-region: ${{ secrets.AWS_REGION }}
+           
+      - name: build docker image and push to ecr repo
+        run: |
+          $(aws ecr get-login --no-include-email --region ap-south-1)
+          docker build -t ${{ secrets.ECR_REPO_NAME }}/golang:${{ env.RELEASE_VERSION  }} .
+          docker push ${{ secrets.ECR_REPO_NAME }}/golang:${{ env.RELEASE_VERSION }}
         
