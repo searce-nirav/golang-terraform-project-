@@ -54,9 +54,9 @@ jobs:
 
 
     - name: terraform initialization 
-      run: ./devops && terraform init 
+      run:   terraform init 
     - name: terraform deployment
-      run: ./devops && terraform apply -var="tag=${{ env.RELEASE_VERSION }}"  -auto-approve  
+      run:  terraform apply -var="tag=${{ env.RELEASE_VERSION }}"  -auto-approve  
         
           
           
