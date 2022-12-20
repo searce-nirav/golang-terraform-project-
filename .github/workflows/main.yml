@@ -39,6 +39,8 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       run: |
+        $(aws ecr get-login --no-include-email --region ap-south-1)
+         
         docker build -t ${{ secrets.ECR_REPO_NAME }}/golang:${{env.RELEASE_VERSION}} .
           docker push ${{ secrets.ECR_REPO_NAME }}/golang:${{env.RELEASE_VERSION}}
         env:
