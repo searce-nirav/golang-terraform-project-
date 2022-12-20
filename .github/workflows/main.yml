@@ -1,16 +1,12 @@
----
-name: "workflow"
+name: Build and Publish
 
-'on':
+on:
+  # run it on push to the default repository branch
   push:
-    branches:
-      - master
-    tags:
-      - "*"
+    branches: [master]
+  # run it during pull request
   pull_request:
-    branches:
-      - master
-  
+
 jobs:
   run_if:
     if:  startsWith(github.head_ref, 'releases/')
