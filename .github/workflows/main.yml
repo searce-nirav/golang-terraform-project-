@@ -1,38 +1,39 @@
-
-name: Build and Publish
+name: Deploy to ECR
 
 on:
-  # run it on push to the default repository branch
+ 
   push:
-    branches: [master]
-  # run it during pull request
-  pull_request:
+    branches: [ main ]
 
 jobs:
-  # define job to build and publish docker image
-  intergration: 
-    name: CI
-    # run only when code is compiling and tests are passing
+  
+  build:
+    
+    name: Build Image
     runs-on: ubuntu-latest
 
-    # steps to perform in job
+   
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Set Relase version
-        id: vars
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      
-      - name:  Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with: 
-             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-             aws-region: ${{ secrets.AWS_REGION }}
-           
-      - name: build docker image and push to ecr repo
-        run: |
-          $(aws ecr get-login --no-include-email --region ap-south-1)
-          docker build -t ${{ secrets.ECR_REPO_NAME }}/golang:${{ env.RELEASE_VERSION  }} .
-          docker push ${{ secrets.ECR_REPO_NAME }}/golang:${{ env.RELEASE_VERSION }}
-        
+
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: test_ml_demo
+        IMAGE_TAG: test_ml_image
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
