@@ -53,9 +53,9 @@ jobs:
           terraform_version: 1.0.9
 
     - name: terraform initialization 
-      run: cd devops/ && terraform init 
+      run: ./devops/ && terraform init 
     - name: terraform deployment
-      run: cd devops/ && terraform apply -var="tag=${{ env.RELEASE_VERSION }}"  -auto-approve  
+      run: ./devops/ && terraform apply -var="tag=${{ env.RELEASE_VERSION }}"  -auto-approve  
         
           
           
