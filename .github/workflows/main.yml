@@ -1,15 +1,10 @@
-name: Build and Publish
+name: CI
 
 on:
-  # run it on push to the default repository branch
- #push:
-   # branches: [master]
-     
-  # run it during pull request
- release:
-  pull_request:
-    branches:
-    - master
+  push:
+    tags:
+    - '*'
+
 jobs:
   build:
     runs-on: ubuntu-latest
