@@ -50,10 +50,9 @@ jobs:
 
 
     - name: terraform initialization 
-      run:   terraform init 
+      run:  terraform init 
+    - name: terraform plan
+      run: terraform plan
     - name: terraform deployment
-      run:  terraform apply  -auto-approve  
-        
-          
-          
+      run: terraform apply  -auto-approve  
        
