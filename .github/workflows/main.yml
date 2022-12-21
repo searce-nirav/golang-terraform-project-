@@ -45,9 +45,10 @@ jobs:
       with:
           cli_confi_crenditials_token: ${{secrets.TF_API_TOKEN}}
         
+    - name: list the contents
+      run: ls -ll
     - name: Terraform Format Check
       run: terraform fmt
-
 
     - name: terraform initialization 
       run:  terraform init 
