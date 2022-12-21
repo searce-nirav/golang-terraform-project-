@@ -56,7 +56,7 @@ jobs:
     - name: terraform initialization 
       run:   terraform init 
     - name: terraform deployment
-      run:  terraform apply -var="tag=${{ env.RELEASE_VERSION }}"  -auto-approve  
+      run:  terraform apply  -auto-approve  
         
           
           
