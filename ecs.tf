@@ -5,7 +5,7 @@ data "aws_ecr_repository" "golang"{
 name = "golang"
 }
 data "template_file" "cb_app" {
-  #template = file("./templates/ecs/cb_app.json.tpl")
+  template = file("./templates/ecs/cb_app.json.tpl")
 
   vars = {
     app_image      = data.aws_ecr_repository.golang.repository_url
